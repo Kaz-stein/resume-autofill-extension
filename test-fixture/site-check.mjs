@@ -136,6 +136,29 @@ record(
 );
 
 /* 3. 演示动画在正常模式下会跑起来（先强制重新加载，避免沿用上一轮状态） */
+/* 3a. 布局没被撑爆：网格容器里混入行内内容时，每段文本都会变成独立网格项，
+      把区块撑出大片空白。这里用「区块高度 / 步骤条目高度」做回归守卫。 */
+await page.send('Emulation.setDeviceMetricsOverride', {
+  width: 1440,
+  height: 900,
+  deviceScaleFactor: 1,
+  mobile: false
+});
+await delay(400);
+const stepLayout = await page.eval(`(() => {
+  const ol = document.querySelector('.steps');
+  const items = [...ol.querySelectorAll('li')].map(li => Math.round(li.getBoundingClientRect().height));
+  return {
+    items,
+    ol: Math.round(ol.getBoundingClientRect().height),
+    section: Math.round(document.getElementById('install').getBoundingClientRect().height)
+  };
+})()`);
+record(
+  '安装步骤没有被网格布局撑高',
+  stepLayout.items.every((h) => h < 200) && stepLayout.ol < 700,
+  `每步 ${stepLayout.items.join(' / ')} px，列表共 ${stepLayout.ol}px，安装区 ${stepLayout.section}px`
+);
 await page.send('Emulation.clearDeviceMetricsOverride');
 await page.send('Page.navigate', { url: `${PAGE}?t=${Date.now()}` });
 await delay(1200);

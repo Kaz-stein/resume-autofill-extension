@@ -637,6 +637,13 @@ a {
   color: var(--ink-soft);
 }
 
+/* 步骤正文必须包一层：网格容器会把每一段裸文本和每个 <code> 都当成独立网格项，
+   直接放行内内容会被拆成几十个网格行，整块区域被撑出大片空白 */
+.steps__body {
+  display: block;
+  min-width: 0;
+}
+
 /* 这里的 01 / 02 是真的步骤顺序，编号承载了信息，不是装饰 */
 .steps li::before {
   content: counter(step, decimal-leading-zero);
