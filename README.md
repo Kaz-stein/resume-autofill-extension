@@ -5,6 +5,16 @@
 
 **所有数据只保存在本机浏览器（`chrome.storage.local`），插件不发起任何网络请求。**
 
+## 零、官网与安装包
+
+- 官网源码在 [`docs/`](./docs) 目录，纯静态（HTML + CSS + 原生 JS，无构建步骤），可直接用 GitHub Pages 发布
+- 扩展安装包放在 [Releases](https://github.com/Kaz-stein/resume-autofill-extension/releases)，官网上的「下载扩展包」按钮指向最新版本
+- 官网自检脚本：`node test-fixture/site-check.mjs`（需要先起一个开了 `--remote-debugging-port=9335` 的干净浏览器），
+  检查三档宽度的横向溢出、是否加载外部资源、减少动效下的表现、键盘焦点可见性与配色对比度
+
+启用 GitHub Pages：仓库 **Settings → Pages → Source: Deploy from a branch → Branch: `main` / 目录: `/docs`**。
+站点会发布在 `https://<用户名>.github.io/<仓库名>/`。
+
 ## 一、安装
 
 Edge 与 Chrome 步骤一致（都是 Chromium 内核）：

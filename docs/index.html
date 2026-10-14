@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>简历信息填充助手 — 填过一遍就够了</title>
+    <meta
+      name="description"
+      content="Edge / Chrome 扩展：把自己维护的简历信息一键填进网页表单。41 个字段按可信度加权匹配，认不准的地方宁可空着。数据只存在你自己的浏览器里。"
+    />
+    <!-- 内联 SVG 图标，避免任何额外请求 -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E6E6B'/%3E%3Cpath d='M9 16.5l4.2 4.2L23 10.8' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+
+    <!-- ============================ 顶栏 ============================ -->
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="./">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="7" fill="currentColor" />
+            <path
+              d="M9 16.5l4.2 4.2L23 10.8"
+              stroke="#fff"
+              stroke-width="3"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="brand__name">简历信息填充助手</span>
+        </a>
+        <nav class="topbar__nav" aria-label="页面导航">
+          <a href="#how">它怎么认字段</a>
+          <a href="#install">安装</a>
+          <a href="#bounds">已知边界</a>
+        </nav>
+        <a class="btn btn--primary btn--sm" href="https://github.com/Kaz-stein/resume-autofill-extension/releases/latest/download/resume-autofill-extension-v1.0.0.zip">
+          下载扩展包
+        </a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ============================ 主张 ============================ -->
+      <section class="hero">
+        <p class="eyebrow">Edge / Chrome 扩展 · Manifest V3</p>
+        <h1 class="hero__title">填过一遍就够了</h1>
+        <p class="hero__lede">
+          把自己维护的简历信息，一键填进网页表单。41 个字段按可信度加权匹配，
+          <strong>认不准的地方它宁可空着</strong>，也不给你填错。
+        </p>
+        <div class="hero__actions">
+          <a
+            class="btn btn--primary"
+            href="https://github.com/Kaz-stein/resume-autofill-extension/releases/latest/download/resume-autofill-extension-v1.0.0.zip"
+          >
+            下载扩展包
+            <span class="btn__meta">v1.0.0 · 47 KB</span>
+          </a>
+          <a class="btn btn--ghost" href="#how">先看它怎么认字段</a>
+        </div>
+        <ul class="facts">
+          <li><span class="facts__k">字段</span><span class="facts__v">41 个</span></li>
+          <li><span class="facts__k">匹配阈值</span><span class="facts__v">低于 3 分不填</span></li>
+          <li><span class="facts__k">端到端测试</span><span class="facts__v">48 项通过</span></li>
+          <li><span class="facts__k">数据</span><span class="facts__v">只在本机</span></li>
+        </ul>
+      </section>
+
+      <!-- ============================ 问题 ============================ -->
+      <section class="band" id="problem">
+        <p class="label">问题</p>
+        <div class="band__body">
+          <h2>你大概已经填过几十遍了</h2>
+          <ol class="pain">
+            <li>同一个手机号，第 40 次复制粘贴。</li>
+            <li>表单嵌在 iframe 里，填完发现提交按钮在另一个框里。</li>
+            <li>手快把「毕业时间」填进了「离职时间」，提交前才发现。</li>
+          </ol>
+          <p class="band__tail">这些活儿不该由人来做。</p>
+        </div>
+      </section>
+
+      <!-- ============================ 机制 ============================ -->
+      <section class="band" id="how">
+        <p class="label">机制</p>
+        <div class="band__body">
+          <h2>四个真正干活的部件</h2>
+
+          <article class="mech">
+            <h3 class="mech__title">它认得出来哪个框该填什么</h3>
+            <p>
+              按可信度加权打分：浏览器标准的 <code>autocomplete</code> 属性 6 分、关联
+              <code>&lt;label&gt;</code> 5 分、<code>placeholder</code> 3.5 分、<code>name</code> 3.2 分、
+              邻近文本 2.5 分……再叠三层消歧：
+            </p>
+            <ul class="ticks">
+              <li><b>负向词一票否决</b>：「昵称」永远不会被当成「姓名」</li>
+              <li><b>区块语义纠偏</b>：「毕业时间」归教育经历，「离职时间」归工作经历</li>
+              <li><b>枚举值佐证</b>：选项里同时有「男」「女」，基本就锁定是性别</li>
+            </ul>
+            <p class="mech__foot">低于 3 分的候选一律不填——宁可不填，也不填错。</p>
+          </article>
+
+          <article class="mech">
+            <h3 class="mech__title">它填的是真值，不是假象</h3>
+            <p>
+              直接改 <code>element.value</code> 只会改 DOM，React / Vue 的内部状态不会跟着变，
+              用户提交时那一格仍然是空的——这是同类工具最常见的翻车点。
+              这个扩展走原型上的原生 setter，再依次派发 <code>input</code> / <code>change</code> /
+              <code>blur</code>，让页面的校验与状态同步逻辑完整跑一遍。
+            </p>
+          </article>
+
+          <article class="mech">
+            <h3 class="mech__title">嵌在 iframe 里也照样填</h3>
+            <p>
+              招聘表单常被嵌在 iframe 中。扩展向页面内所有框架广播，各框架填自己那一份，
+              后台按「报到了几个框架」等齐再汇总——不会因为某个框架慢就漏报结果，
+              也不会在顶层还没填完时提前收尾。
+            </p>
+          </article>
+
+          <article class="mech">
+            <h3 class="mech__title">每填一个都要回头核对</h3>
+            <p>
+              每个字段填完立刻回读一遍，值不一致就标记为失败并说明原因。
+              结果面板列出成功 / 跳过 / 失败三栏，跳过和失败都带理由；
+              填错了点一下「撤销本次填充」就能把页面还原。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============================ 签名：演示 ============================ -->
+      <section class="demo" id="demo">
+        <div class="demo__head">
+          <p class="label">演示</p>
+          <h2>看它认一遍</h2>
+          <p class="demo__lede">
+            下面是一张模拟表单，滚到这里会自动填一遍。
+            每个字段旁边的小字，是它判断的依据和分数——和扩展里跑的是同一套规则。
+          </p>
+        </div>
+
+        <figure class="board">
+          <div class="board__form" id="demoForm">
+            <div class="row" data-fill="示例姓名" data-why="autocomplete 6 分 + label 5 分">
+              <span class="row__label">姓名</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row row--choice" data-fill="男" data-why="枚举值佐证 4 分 + 邻近「性别」2.5 分">
+              <span class="row__label">性别</span>
+              <span class="row__input row__input--choice">
+                <span class="chip" data-choice="男">男</span>
+                <span class="chip" data-choice="女">女</span>
+              </span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row" data-fill="13800000000" data-why="label「手机号」命中 · 5 分">
+              <span class="row__label">手机号</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row" data-fill="example@example.com" data-why="label 5 分 + name=&quot;email&quot; 3.2 分">
+              <span class="row__label">电子邮箱</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row" data-fill="2017-09-01 — 2021-06-30" data-why="label 5 分 + 区块「教育经历」+2 分">
+              <span class="row__label">教育经历 · 起止时间</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row" data-fill="2021-07-01 — 至今" data-why="label 5 分 + 区块「工作经历」+2 分">
+              <span class="row__label">工作经历 · 在职时间</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row row--skip" data-skip="简历里这一项是空的">
+              <span class="row__label">离职原因</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row row--skip" data-skip="字段名命中干扰词，直接不看">
+              <span class="row__label">短信验证码</span>
+              <span class="row__input"><span class="row__value"></span></span>
+              <span class="row__why"></span>
+            </div>
+
+            <div class="row row--skip" data-skip="没有任何字段和它匹配">
+              <span class="row__label">我已阅读并同意《用户协议》</span>
+              <span class="row__input"><span class="row__value row__value--box"></span></span>
+              <span class="row__why"></span>
+            </div>
+          </div>
+
+          <figcaption class="board__foot">
+            <p class="board__result" id="demoResult">本次演示：填入 <b>6</b> 个 · 跳过 <b>3</b> 个</p>
+            <button class="replay" type="button" id="demoReplay">重放演示</button>
+          </figcaption>
+          <noscript>
+            <p class="board__result" style="padding: 0 24px 16px">
+              演示动画需要 JavaScript；上面「机制」一节的规则说明不受影响。
+            </p>
+          </noscript>
+        </figure>
+      </section>
+
+      <!-- ============================ 安装 ============================ -->
+      <section class="band" id="install">
+        <p class="label">安装</p>
+        <div class="band__body">
+          <h2>四步装上，刷新页面就能用</h2>
+
+          <div class="install__cta">
+            <a
+              class="btn btn--primary"
+              href="https://github.com/Kaz-stein/resume-autofill-extension/releases/latest/download/resume-autofill-extension-v1.0.0.zip"
+            >
+              下载扩展包
+              <span class="btn__meta">zip · 47 KB</span>
+            </a>
+            <p class="install__note">
+              解压后得到 <code>resume-autofill-extension</code> 文件夹，里面有 <code>manifest.json</code>。
+              加载时选这个文件夹。
+            </p>
+          </div>
+
+          <ol class="steps">
+            <li>
+              <b>打开扩展管理页</b>
+              Edge 访问 <code>edge://extensions/</code>，Chrome 访问 <code>chrome://extensions/</code>。
+              两个浏览器的步骤完全一样。
+            </li>
+            <li>
+              <b>开启「开发人员模式」</b>
+              在页面左下角（Chrome 在右上角）把开关打开。
+            </li>
+            <li>
+              <b>点「加载解压缩的扩展」</b>
+              选中刚才解压出来的 <code>resume-autofill-extension</code> 文件夹。
+            </li>
+            <li>
+              <b>刷新已经打开的标签页</b>
+              内容脚本只在页面加载时注入，安装前就开着的页面需要刷新一次才会出现悬浮按钮。
+            </li>
+          </ol>
+
+          <p class="install__after">
+            装好后打开任意含表单的页面，右下角会出现「一键填写简历」按钮；
+            也可以点扩展图标，在弹窗里触发。首次使用记得先去简历管理页把示例内容改成你自己的。
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================ 边界 ============================ -->
+      <section class="band" id="bounds">
+        <p class="label">边界</p>
+        <div class="band__body">
+          <h2>它现在还做不到什么</h2>
+          <p class="band__lede">
+            写清楚这些比堆优点有用——你大概不希望装完才发现某个招聘网站填不动。
+          </p>
+          <ul class="bounds">
+            <li>
+              <b>还没在真实招聘网站上验证过。</b>
+              目前只在本地模拟表单和真实浏览器行为上跑过测试。真实站点的自定义组件实现各异，命中率需要你实际用过才知道。
+            </li>
+            <li>
+              <b>纯面板选择的日期控件填不了。</b>
+              必须点日历翻页才能选日期的组件不会自动点选，会在结果面板里标成失败。
+              能手动输入的日期框没问题。
+            </li>
+            <li>
+              <b>省市区三级联动不支持。</b>
+              需要逐级选择的下拉组件填不进去，会跳过。
+            </li>
+            <li>
+              <b>富文本编辑器只做简单写入。</b>
+              复杂编辑器（比如带工具栏的自定义富文本）可能不生效。
+            </li>
+            <li>
+              <b>只填看得见的字段。</b>
+              折叠起来或还没展开的表单，需要先展开再点填充。
+            </li>
+            <li>
+              <b>需要「读取所有网站」的权限。</b>
+              这是「在任意网站都能用」的代价。如果只打算在个别网站用，可以自己改清单文件收窄权限。
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================ 页脚 ============================ -->
+    <footer class="foot">
+      <div class="foot__inner">
+        <div class="foot__col">
+          <p class="foot__title">简历信息填充助手</p>
+          <p class="foot__meta">v1.0.0 · Manifest V3 · 无需构建</p>
+        </div>
+        <div class="foot__col">
+          <p class="foot__title">数据只写在你的浏览器里</p>
+          <p class="foot__meta">
+            所有信息保存在 <code>chrome.storage.local</code>，不发任何网络请求，
+            没有第三方统计，不使用 <code>eval</code>。
+          </p>
+        </div>
+        <div class="foot__col">
+          <p class="foot__title">源码</p>
+          <p class="foot__meta">
+            <a href="https://github.com/Kaz-stein/resume-autofill-extension">GitHub 仓库</a> ·
+            <a href="https://github.com/Kaz-stein/resume-autofill-extension/blob/main/README.md">README</a>
+          </p>
+        </div>
+      </div>
+      <p class="foot__quiet">
+        这个页面不加载任何外部资源：没有 CDN 字体、没有外部图片、没有第三方脚本。
+      </p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
