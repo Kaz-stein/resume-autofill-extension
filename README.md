@@ -12,14 +12,12 @@
 - 官网自检脚本：`node test-fixture/site-check.mjs`（需要先起一个开了 `--remote-debugging-port=9335` 的干净浏览器），
   检查三档宽度的横向溢出、是否加载外部资源、减少动效下的表现、键盘焦点可见性与配色对比度
 
-发布到 GitHub Pages 有两种方式，**二选一**：
+发布到 GitHub Pages：**Settings → Pages → Source 选 `Deploy from a branch` →
+Branch 选 `main`、目录选 `/docs` → Save**。站点会发布在 `https://<用户名>.github.io/<仓库名>/`，
+之后每次推送到 `main` 且改动了 `docs/` 都会自动重新构建。
 
-1. 工作流（仓库里已配好 `.github/workflows/pages.yml`）：推到 `main` 就自动发布，
-   首次运行会连同 Pages 站点一起启用，不需要先去设置里开一遍
-2. 分支发布：**Settings → Pages → Source: Deploy from a branch → Branch: `main` / 目录: `/docs`**
-   （用这种就删掉上面那个工作流文件）
-
-站点会发布在 `https://<用户名>.github.io/<仓库名>/`。
+> 也可以改用 GitHub Actions 发布（`actions/deploy-pages`），但那样需要把 Source 改成
+> `GitHub Actions`，且首次启用同样要在设置页点一次，并不会更省事。
 
 ## 一、安装
 
