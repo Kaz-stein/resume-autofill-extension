@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>简历信息填充助手 · 管理简历</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="banner" id="welcome" hidden>
+      <strong>安装完成。</strong>
+      下面是一份示例简历，把内容改成你自己的真实信息即可开始使用。
+      所有数据只保存在本机浏览器里，不会上传到任何服务器。
+      <button type="button" class="link" id="welcome-close">知道了</button>
+    </div>
+
+    <div class="layout">
+      <!-- 左侧：简历列表 + 分组导航 -->
+      <aside class="side">
+        <div class="side-block">
+          <div class="side-title">
+            <span>我的简历</span>
+            <button type="button" class="mini" id="btn-add-resume" title="新建一份空白简历">＋</button>
+          </div>
+          <ul class="resume-list" id="resume-list"></ul>
+        </div>
+
+        <nav class="side-block">
+          <div class="side-title"><span>内容分组</span></div>
+          <ul class="group-list" id="group-list"></ul>
+        </nav>
+      </aside>
+
+      <!-- 右侧：编辑区 -->
+      <main class="main">
+        <header class="main-head">
+          <div class="name-edit">
+            <label for="resume-name-input">简历名称</label>
+            <input type="text" id="resume-name-input" placeholder="例如：前端开发版" />
+          </div>
+          <div class="tools">
+            <span class="save-hint" id="save-hint"></span>
+            <button type="button" class="btn" id="btn-export">导出 JSON</button>
+            <button type="button" class="btn" id="btn-import">导入 JSON</button>
+            <button type="button" class="btn danger" id="btn-clear">清空全部数据</button>
+            <input type="file" id="file-input" accept="application/json,.json" hidden />
+          </div>
+        </header>
+
+        <section class="form-area" id="form-area"></section>
+
+        <footer class="main-foot">
+          <span class="privacy">🔒 所有信息只保存在本机浏览器（chrome.storage.local），插件不会发起任何网络请求。</span>
+        </footer>
+      </main>
+    </div>
+
+    <script src="../common/schema.js"></script>
+    <script src="../common/storage.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

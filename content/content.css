@@ -1,0 +1,25 @@
+/*
+ * content.css —— 只负责悬浮按钮「宿主元素」的定位
+ *
+ * 按钮本身和结果面板全部渲染在 Shadow DOM 里（样式由 content.js 内联注入），
+ * 这样招聘网站的全局 CSS 完全影响不到它们。
+ * 宿主元素留在页面文档里，所以它的定位写在 CSS 文件里最合适。
+ */
+#ra-float-host {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 88px !important;
+  z-index: 2147483000 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  pointer-events: none !important; /* 宿主不拦截点击，只有里面的按钮可点 */
+}
+
+/* 拖动时的过程中不要触发页面选中 */
+#ra-float-host.ra-dragging {
+  user-select: none !important;
+}

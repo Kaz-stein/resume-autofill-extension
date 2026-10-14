@@ -1,0 +1,10 @@
+# 本地测试产物
+work/
+*.log
+
+# 编辑器 / 系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

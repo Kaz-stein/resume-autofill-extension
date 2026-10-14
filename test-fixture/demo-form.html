@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模拟招聘表单 · 简历填充测试页</title>
+    <style>
+      body {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 24px 20px 80px;
+        font: 14px/1.7 "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        color: #1c1c1e;
+        background: #fafbfc;
+      }
+      h1 { font-size: 18px; }
+      h3 { margin: 0 0 10px; font-size: 14px; color: #2f4ce0; }
+      .tip {
+        padding: 10px 14px; margin-bottom: 18px; font-size: 13px;
+        background: #eef2ff; border: 1px solid #dbe2ff; border-radius: 10px; color: #313f8f;
+      }
+      .section {
+        background: #fff; border: 1px solid #e8eaee; border-radius: 12px;
+        padding: 16px 18px; margin-bottom: 14px;
+      }
+      .form-item { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+      .form-item > label { font-size: 12px; color: #6b7280; }
+      input[type="text"], input[type="tel"], textarea, select {
+        width: 100%; padding: 8px 10px; font: inherit; font-size: 13px;
+        border: 1px solid #e8eaee; border-radius: 8px; background: #fff;
+      }
+      textarea { min-height: 76px; resize: vertical; }
+      .radios { display: flex; gap: 16px; }
+      .radios label { display: flex; gap: 5px; align-items: center; font-size: 13px; color: #374151; }
+      .search-bar { margin-bottom: 14px; }
+      .fake-select { position: relative; }
+      .fake-select input { cursor: pointer; background: #fff; }
+      .fs-panel {
+        position: absolute; z-index: 5; left: 0; right: 0; top: 100%;
+        background: #fff; border: 1px solid #e8eaee; border-radius: 8px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); margin-top: 4px; padding: 4px;
+      }
+      .fs-option { padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+      .fs-option:hover { background: #f2f3f7; }
+      .state {
+        margin-top: 18px; padding: 10px 14px; font-size: 12px; color: #374151;
+        background: #fff; border: 1px dashed #cbd5e1; border-radius: 10px;
+      }
+      .state b { color: #2f4ce0; }
+    </style>
+  </head>
+  <body>
+    <h1>模拟招聘表单（测试用）</h1>
+    <div class="tip">
+      这个页面用来验证「简历信息填充助手」：包含原生输入框、下拉框、单选框、复选组、
+      React 风格受控输入框、自定义下拉组件、嵌套 iframe，以及几个<b>应当被跳过</b>的干扰字段。
+    </div>
+
+    <!-- 干扰项 1：搜索框，插件不应填充 -->
+    <div class="search-bar">
+      <input type="text" id="f-search" placeholder="搜索职位" />
+    </div>
+
+    <section class="section">
+      <h3>基本信息</h3>
+      <div class="form-item">
+        <label for="f-name">姓名</label>
+        <input type="text" id="f-name" name="realname" placeholder="请输入姓名" />
+      </div>
+      <div class="form-item">
+        <label>性别</label>
+        <div class="radios">
+          <label><input type="radio" name="gender" value="男" id="f-gender-male" />男</label>
+          <label><input type="radio" name="gender" value="女" id="f-gender-female" />女</label>
+        </div>
+      </div>
+      <div class="form-item">
+        <label for="f-phone">手机号</label>
+        <input type="tel" id="f-phone" placeholder="11 位手机号" />
+      </div>
+      <!-- React 风格受控输入框：直接写 .value 不会触发 input 事件，内部 state 不会更新 -->
+      <div class="form-item">
+        <label for="f-email">电子邮箱</label>
+        <input type="text" id="f-email" />
+      </div>
+      <div class="form-item">
+        <label for="f-degree">学历</label>
+        <select id="f-degree">
+          <option value="">请选择</option>
+          <option value="大专">大专</option>
+          <option value="本科">本科</option>
+          <option value="硕士">硕士</option>
+          <option value="博士">博士</option>
+        </select>
+      </div>
+      <!-- 干扰项 2：短信验证码，插件不应填充 -->
+      <div class="form-item">
+        <label for="f-captcha">短信验证码</label>
+        <input type="text" id="f-captcha" maxlength="6" />
+      </div>
+      <!-- 干扰项 3：隐藏字段，插件不应填充 -->
+      <input type="hidden" id="f-hidden" name="realname_hidden" value="" />
+    </section>
+
+    <section class="section">
+      <h3>教育经历</h3>
+      <div class="form-item">
+        <label for="f-school">学校名称</label>
+        <input type="text" id="f-school" />
+      </div>
+      <div class="form-item">
+        <label for="f-major">专业</label>
+        <input type="text" id="f-major" />
+      </div>
+      <div class="form-item">
+        <label for="f-edu-end">毕业时间</label>
+        <input type="text" id="f-edu-end" placeholder="YYYY-MM-DD" />
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>工作经历</h3>
+      <div class="form-item">
+        <label for="f-company">公司名称</label>
+        <input type="text" id="f-company" />
+      </div>
+      <div class="form-item">
+        <label for="f-jobtitle">职位名称</label>
+        <input type="text" id="f-jobtitle" />
+      </div>
+      <div class="form-item">
+        <label for="f-work-desc">工作内容</label>
+        <textarea id="f-work-desc"></textarea>
+      </div>
+      <div class="form-item">
+        <label for="f-leave">离职原因</label>
+        <input type="text" id="f-leave" />
+      </div>
+      <div class="form-item">
+        <label for="f-work-end">离职时间</label>
+        <input type="text" id="f-work-end" />
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>项目经历</h3>
+      <div class="form-item">
+        <label for="f-project-name">项目名称</label>
+        <input type="text" id="f-project-name" />
+      </div>
+      <div class="form-item">
+        <label for="f-tech">技术栈</label>
+        <input type="text" id="f-tech" />
+      </div>
+      <div class="form-item">
+        <label for="f-project-desc">项目描述</label>
+        <textarea id="f-project-desc"></textarea>
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>求职意向</h3>
+      <!-- 自定义下拉组件（模拟 Ant Design 那种 input + 面板的结构） -->
+      <div class="form-item fake-select">
+        <label for="f-city">期望城市</label>
+        <input type="text" id="f-city" readonly role="combobox" aria-haspopup="listbox" placeholder="请选择" />
+        <div class="fs-panel" id="f-city-panel" role="listbox" hidden>
+          <div class="fs-option" role="option">北京</div>
+          <div class="fs-option" role="option">上海</div>
+          <div class="fs-option" role="option">广州</div>
+          <div class="fs-option" role="option">示例城市</div>
+        </div>
+      </div>
+      <div class="form-item">
+        <label for="f-salary">期望薪资</label>
+        <input type="text" id="f-salary" />
+      </div>
+    </section>
+
+    <section class="section">
+      <h3>自我评价</h3>
+      <div class="form-item">
+        <label for="f-summary">自我评价</label>
+        <textarea id="f-summary"></textarea>
+      </div>
+      <!-- 干扰项 4：协议勾选框，插件不应勾选 -->
+      <label><input type="checkbox" id="f-agree" /> 我已阅读并同意《用户协议》</label>
+    </section>
+
+    <section class="section">
+      <h3>内嵌 iframe 表单（跨框架填充测试）</h3>
+      <iframe src="demo-iframe.html" width="100%" height="180" style="border: 1px solid #e8eaee; border-radius: 8px"></iframe>
+    </section>
+
+    <div class="state">
+      React 风格受控输入框的内部 state：<b id="controlled-state">（空）</b>
+      <br />
+      如果这里是空的，说明填充脚本只改了 DOM 的 value，没有派发 input 事件——真实网站提交时会丢失这个值。
+    </div>
+
+    <script>
+      /* ---------------- 模拟受控组件 ---------------- */
+      const controlled = { email: '' };
+
+      const emailInput = document.getElementById('f-email');
+      const stateEl = document.getElementById('controlled-state');
+
+      // 和 React 一样：只有 input 事件才会更新内部 state
+      emailInput.addEventListener('input', (e) => {
+        controlled.email = e.target.value;
+        stateEl.textContent = controlled.email || '（空）';
+      });
+
+      /* ---------------- 模拟自定义下拉组件 ---------------- */
+      const cityInput = document.getElementById('f-city');
+      const cityPanel = document.getElementById('f-city-panel');
+
+      cityInput.addEventListener('click', () => {
+        cityPanel.hidden = false;
+      });
+
+      cityPanel.addEventListener('click', (e) => {
+        const option = e.target.closest('.fs-option');
+        if (!option) return;
+        cityInput.value = option.textContent.trim();
+        cityPanel.hidden = true;
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.fake-select')) cityPanel.hidden = true;
+      });
+
+      /* ---------------- 供自动化测试读取的快照 ---------------- */
+      window.__fixtureState = {
+        get controlledEmail() {
+          return controlled.email;
+        }
+      };
+
+      window.__readValues = () => {
+        const val = (id) => {
+          const el = document.getElementById(id);
+          return el ? el.value : null;
+        };
+        const doc = document.querySelector('iframe').contentDocument;
+        return {
+          name: val('f-name'),
+          gender: (document.querySelector('input[name="gender"]:checked') || {}).value || '',
+          phone: val('f-phone'),
+          emailDom: val('f-email'),
+          emailState: controlled.email,
+          degree: val('f-degree'),
+          school: val('f-school'),
+          major: val('f-major'),
+          eduEnd: val('f-edu-end'),
+          company: val('f-company'),
+          jobTitle: val('f-jobtitle'),
+          workDesc: val('f-work-desc'),
+          leaveReason: val('f-leave'),
+          workEnd: val('f-work-end'),
+          projectName: val('f-project-name'),
+          tech: val('f-tech'),
+          projectDesc: val('f-project-desc'),
+          city: val('f-city'),
+          salary: val('f-salary'),
+          summary: val('f-summary'),
+          // 以下四项应当保持为空/未勾选
+          captcha: val('f-captcha'),
+          search: val('f-search'),
+          hidden: val('f-hidden'),
+          agree: document.getElementById('f-agree').checked,
+          iframe: {
+            position: doc ? doc.getElementById('if-position').value : 'NO_IFRAME',
+            other: doc ? doc.getElementById('if-other').value : 'NO_IFRAME'
+          }
+        };
+      };
+    </script>
+  </body>
+</html>

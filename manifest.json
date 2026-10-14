@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "简历信息填充助手",
+  "version": "1.0.0",
+  "description": "一键把本地保存的简历信息填入招聘网站表单。数据只存本地，不上传任何服务器。",
+  "minimum_chrome_version": "109",
+
+  "permissions": ["activeTab", "scripting", "storage", "downloads"],
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "common/schema.js",
+        "common/storage.js",
+        "content/matcher.js",
+        "content/filler.js",
+        "content/content.js"
+      ],
+      "css": ["content/content.css"],
+      "run_at": "document_idle",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "简历信息填充助手"
+  },
+
+  "options_page": "options/options.html"
+}

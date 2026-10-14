@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>简历信息填充助手</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <div>
+        <h1>简历信息填充助手</h1>
+        <p class="sub" id="resume-name">加载中…</p>
+      </div>
+    </header>
+
+    <section class="summary" id="summary"></section>
+
+    <button type="button" class="primary" id="btn-fill">一键填写当前页面</button>
+    <p class="status" id="status"></p>
+
+    <section class="settings">
+      <label class="row">
+        <input type="checkbox" id="set-only-empty" />
+        <span>
+          只填充空白字段
+          <em>不覆盖页面上已填好的内容（推荐）</em>
+        </span>
+      </label>
+      <label class="row">
+        <input type="checkbox" id="set-highlight" />
+        <span>
+          填充后高亮字段
+          <em>方便你快速核对填了什么</em>
+        </span>
+      </label>
+      <label class="row">
+        <input type="checkbox" id="set-float" />
+        <span>
+          页面右下角显示悬浮按钮
+          <em>关掉后只能用本弹窗触发填充</em>
+        </span>
+      </label>
+    </section>
+
+    <footer class="foot">
+      <button type="button" class="ghost" id="btn-options">管理简历</button>
+      <span class="privacy">数据仅存本地</span>
+    </footer>
+
+    <script src="../common/schema.js"></script>
+    <script src="../common/storage.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

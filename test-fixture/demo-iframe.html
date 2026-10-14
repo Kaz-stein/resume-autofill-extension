@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>iframe 内的表单</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 14px;
+        font: 13px/1.6 "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        background: #fff;
+      }
+      .form-item { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+      label { font-size: 12px; color: #6b7280; }
+      input {
+        padding: 7px 10px; font: inherit; font-size: 13px;
+        border: 1px solid #e8eaee; border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 这个 iframe 里的字段应当被同一个插件填充（验证跨框架协同） -->
+    <div class="form-item">
+      <label for="if-position">期望职位</label>
+      <input type="text" id="if-position" />
+    </div>
+    <div class="form-item">
+      <label for="if-other">昵称（干扰项，不应被填成姓名）</label>
+      <input type="text" id="if-other" />
+    </div>
+  </body>
+</html>
