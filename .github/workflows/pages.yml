@@ -1,0 +1,51 @@
+# 把 docs/ 目录发布到 GitHub Pages
+#
+# 为什么用工作流而不是「Deploy from a branch」：
+#   工作流带 enablement: true，首次运行会连同 Pages 站点一起启用，
+#   不需要先在仓库设置里手动开一遍；之后每次改动 docs/ 都会自动重新发布。
+#
+# 注意：如果以后在 Settings → Pages 里改成了「Deploy from a branch」，
+#       请删掉这个文件，两种方式二选一，不要同时用。
+
+name: Deploy site to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 配置 Pages（首次运行会一并启用站点）
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: 打包 docs 目录
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4
